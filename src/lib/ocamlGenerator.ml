@@ -86,7 +86,7 @@ class ocamlGenerator graph dir index = object (self)
 
       let types = List.map argslist ~f:(self#toOcamlType_exn ~low_level:false) in
 
-      let args2 = List.map3_exn types argslist argnames ~f:(fun _ arg name ->
+      let _args2 = List.map3_exn types argslist argnames ~f:(fun _ arg name ->
         match pattern index arg with
           | InvalidPattern -> assert false
           | EnumPattern _
@@ -94,7 +94,7 @@ class ocamlGenerator graph dir index = object (self)
           | ObjectPattern    -> sprintf " (%s#handler) " name
           | ObjectDefaultPattern -> sprintf "(wrap_handler \"%s\" \"%s\" %s)" cpp_func_name name name
       ) in
-      let args1 = List.map3_exn types argslist argnames ~f:(fun ttt ({arg_type=start;_} as arg) name ->
+      let _args1 =List.map3_exn types argslist argnames ~f:(fun ttt ({arg_type=start;_} as arg) name ->
         match pattern index arg with
           | InvalidPattern -> assert false
           | EnumPattern _
@@ -175,7 +175,7 @@ class ocamlGenerator graph dir index = object (self)
     match pattern index (simple_arg res) with
       | ObjectPattern -> begin
         let res_classname = ocaml_class_name res.t_name in
-           let isQObject =
+           let _ =
              let key = NameKey.key_of_fullname res.t_name in
              isQObject ~key graph
            in
@@ -372,7 +372,7 @@ class ocamlGenerator graph dir index = object (self)
     List.iter !classes ~f:(fun ( (lst,_) as key) ->
       match SuperIndex.find_exn index key with
         | Class (c,_) ->
-          let is_abstr = is_abstract_class index ~prefix:[] c.c_name in
+          let _is_abstr = is_abstract_class index ~prefix:[] c.c_name in
           let classname = List.hd_exn lst in
           let ocaml_classname = ocaml_class_name classname in
           fprintf h1 "(* classname = %s, isQObject = %b *)\n" classname
@@ -453,11 +453,11 @@ class ocamlGenerator graph dir index = object (self)
       let classname = c.c_name in
       printf "Generating class %s\n%!" classname;
       let print_c fmt = fprintf h_classes fmt in
-      let print_cre fmt = fprintf h_constrs fmt in
+      let _print_cre fmt = fprintf h_constrs fmt in
       let print_stu fmt = fprintf h_stubs fmt in
 
       let clas_sort = classify_class_exn classname ~index in
-      let is_abstract = is_abstract_class ~prefix index classname in
+      let _is_abstract = is_abstract_class ~prefix index classname in
       let ocaml_classname = ocaml_class_name classname in
       let isQObject = isQObject graph ~key in
 
@@ -575,7 +575,7 @@ class ocamlGenerator graph dir index = object (self)
               print_c "(* %s*)\n" (string_of_meth m);
               let types = List.map m.m_args ~f:(self#toOcamlType_exn ~low_level:false) in
               let argnames = List.mapi m.m_args ~f:(fun i _ -> "x"^(string_of_int i)) in
-              let (xs,ys) = self#get_params_helper types m.m_args argnames m.m_out_name in
+              let _ = self#get_params_helper types m.m_args argnames m.m_out_name in
               print_c "  method virtual %s: %s\n" m.m_out_name (String.concat ~sep:"->" types)
 
             );
@@ -619,7 +619,7 @@ class ocamlGenerator graph dir index = object (self)
             print_c " %s me = object(self)\n" ocaml_classname;
             print_c "   method handler : [`qobject] obj = me\n";
             MethSet.iter c.c_meths ~f:(fun m ->
-              let is_abstract = List.mem m.m_modif `Abstract in
+              let _is_abstract = List.mem m.m_modif `Abstract in
               if m.m_access = `Public && is_good_meth ~classname ~index m
               then (
                 self#gen_meth_stubs ~isQObject ~classname h_stubs m;

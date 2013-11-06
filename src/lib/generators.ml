@@ -120,7 +120,7 @@ let good_meth_helper ~res_cond ~arg_cond ~classname ~index meth =
       match List.find m_args ~f:(fun arg -> (not (arg_cond arg)) && (skipArgument ~index arg)) with
 	    | None -> (* all arguments are OK *)
             if res_cond m_res then true
-            else (is_void_type m_res) or not (skipArgument ~index (simple_arg m_res))
+            else (is_void_type m_res) || not (skipArgument ~index (simple_arg m_res))
 	    | Some arg ->
             false
     end
@@ -152,8 +152,8 @@ let is_abstract_class ~prefix index name =
   let f acc m = acc || (List.mem m.m_modif `Abstract) in
   let ans = match SuperIndex.find index key with
     | Some (Class (c,_)) ->
-      (MethSet.fold ~init:false c.c_meths ~f) or ((MethSet.fold ~init:false c.c_slots ~f))
-	    or (c.c_constrs = [])
+      (MethSet.fold ~init:false c.c_meths ~f) || ((MethSet.fold ~init:false c.c_slots ~f))
+	    || (c.c_constrs = [])
     | None -> raise (Common.Bug (sprintf "Class %s is not in index" name))
     | Some (Enum _) -> raise (Common.Bug (sprintf "expected class %s, but enum found" name) )
   in
